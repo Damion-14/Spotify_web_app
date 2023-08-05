@@ -87,7 +87,11 @@
         }
     </style>
 </head>
-<body>
+{% extends "layout.html" %}
+
+{% block title %}Results{% endblock %}
+
+{% block content %}
     <h1>Hello, {{ username }}!</h1>
     <div class="queue">
         <div class="currently-playing">
@@ -110,5 +114,4 @@
             // Your remove song logic here
         }
     </script>
-</body>
-</html>
+{% endblock %}

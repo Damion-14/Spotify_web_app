@@ -17,24 +17,28 @@ class UserSpotify:
         self.currently_playing = None
         self.queue = None
         self.playlists = None
+        self.name = client_id
 
     def get_queue(self):
         """
         Returns the User's Queue.
         The user's queue is a list of songs that are currently playing or in the queue to be played.
         The function makes use of the `queue()` method from the Spotipy library to retrieve this information.
-        It returns a list where the first element is the song currently playing and the second element is the list of songs in the queue.
+        It returns a list where the first element is the song currently playing and the second element is the list of songs in the 
+        queue.
         """
         try:
             queue = self.sp.queue()
             if queue != {'currently_playing': None, 'queue': []}:
-                currently_playing = queue['currently_playing']['name']
-                queue_list = [item['name'] for item in queue["queue"]]
+                currently_playing = [queue['currently_playing']['name'], queue['currently_playing']['id'], \
+                                     self.get_song_album_cover(queue['currently_playing']['id'], image = 1)]
+                #print(queue["queue"][0]['album']['artists'])
+                queue_list = [[item['name'],item['id'], self.get_song_album_cover(item['id'], image = 2)] for item in queue["queue"]]
                 self.queue = queue_list
                 self.currently_playing = currently_playing
                 return [currently_playing, queue_list]
             else:
-                print('User Not Playing Music')
+                #print('User Not Playing Music')
                 return None
         except spotipy.exceptions.SpotifyException as e:
             print('Error Encountered: ', e)
@@ -133,7 +137,6 @@ class UserSpotify:
             results_list.append([song_name,artist_names_str, song_id])
         return results_list
     
-    def get_song_album_cover(self, songID):
-        # This function is not implemented and does not contain any explanation.
-        # It appears to be intended for getting the album cover of a song using its 'songID'.
-        pass
+    def get_song_album_cover(self, songID, image = 2):
+        albumID = self.sp.track(songID)['album']
+        return albumID['images'][image]['url']
