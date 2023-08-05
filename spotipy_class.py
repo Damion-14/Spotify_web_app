@@ -13,7 +13,7 @@ class UserSpotify:
                                                             client_secret=self.client_secret,
                                                             redirect_uri=redirect_uri,
                                                             scope=scopes))
-        
+        self.currently
     def get_queue(self):
         """
         Returns the Users Queue
@@ -24,8 +24,10 @@ class UserSpotify:
         queue_list = []
         #checks if user is listening to music
         if queue != {'currently_playing': None, 'queue': []}:
+            
             #loop through songs in queue and append their name, 
-            #can append song id eventually with 
+            #can append song id eventually with item['id']
+            
             for item in queue["queue"]:
                 queue_list.append(item['name'])
             return [queue['currently_playing']['name'], queue_list]
@@ -42,6 +44,8 @@ class UserSpotify:
         """
         user_playlists = sp.current_user_playlists()
         user_playlists = [item['name'] for item in user_playlists['items']]
+        if name in user_playlists:
+            return 'Playlist name already exsits'
         try:
             playlist = sp.user_playlist_create(userID, name, description='I made this playlist with python')
             playlist_id = playlist['id']
@@ -64,10 +68,12 @@ class UserSpotify:
         """
         tracks_to_add = []
         while len(tracks_to_add) < number_of_songs_to_add:
-            recommended_tracks = sp.recommendations(seed_artists=seed_artists, seed_genres=seed_genres, seed_tracks=seed_tracks, limit=limit)
+            recommended_tracks = sp.recommendations(seed_artists=seed_artists, seed_genres=seed_genres, \
+                                                    seed_tracks=seed_tracks, limit=limit)
             for item in recommended_tracks['tracks']:
                 if item['id'] not in tracks_to_add:
                     tracks_to_add.append(item['id'])
 
         sp.user_playlist_add_tracks(user, playlist_id, tracks_to_add)
+        
     
