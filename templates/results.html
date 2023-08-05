@@ -3,72 +3,112 @@
 <head>
     <title>Result Page</title>
     <style>
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #0066cc;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .queue {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
         .song-box {
             border: 1px solid #ccc;
             padding: 10px;
-            margin-bottom: 10px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 500px; /* Take full width available */
+            height: 50px; /* Set the height as needed */
+        }
+
+        .song-image {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .song-details {
+            flex: 1; /* Take remaining space within .song-box */
+            display: flex;
+            align-items: center;
+        }
+
+        .song-title {
+            flex: 1; /* Take remaining space within .song-details */
+            text-align: center; /* Align the text in the center */
+        }
+
+        .currently-playing {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px; /* Add some space below the currently playing song */
+        }
+
+        .currently-playing .song-image {
+            width: 120px;
+            height: 120px;
+            margin-right: 20px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
         }
 
         .remove-button {
-            background-color: #ff0000;
+            background-color: #ff3366;
             color: #fff;
             border: none;
-            padding: 5px 10px;
+            padding: 8px 15px;
             cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-button:hover {
+            background-color: #ff0044;
         }
     </style>
 </head>
 <body>
     <h1>Hello, {{ username }}!</h1>
-    
-    <h2>Currently Playing: {{ list[0] }}</h2>
-    <h3>Queue</h3>
-    {% for song in list[1] %}
-        <div class="song-box">
-            <span>{{ song }}</span>
-            <button class="remove-button" onclick="removeSong('{{ song }}')">Remove</button>
+    <div class="queue">
+        <div class="currently-playing">
+            <img src="{{ listx[0][2] }}" class="song-image" alt="Song Image">
+            <h2>{{ listx[0][0] }}</h2>
         </div>
-    {% endfor %}
+        <h3>Queue</h3>
+        {% for song in listx[1] %}
+            <div class="song-box">
+                <img class="song-image" src="{{ song[2] }}" alt="Song Image">
+                <div class="song-details">
+                    <span class="song-title">{{ song[0] }}</span>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
 
     <script>
-    function removeSong(song) {
-        // Send an AJAX request to the server to remove the song from the queue
-        // Replace this with a proper AJAX request using libraries like Axios or fetch API.
-        // For demonstration purposes, we'll just log the song name to the console.
-        console.log(`Removing song: ${song}`);
-
-        // After removing the song, update the queue on the page
-        updateQueue();
-    }
-
-    function updateQueue() {
-        // Fetch the latest queue data from the server
-        // Replace 'http://localhost:5000' with the actual address of your Flask app
-        fetch('http://localhost:5000/get_queue')
-            .then(response => response.json())
-            .then(queue => {
-                // Update the queue data on the page
-                // Replace '#queue-container' with the selector of the container where the queue is displayed
-                const queueContainer = document.querySelector('#queue-container');
-                queueContainer.innerHTML = ''; // Clear the existing content
-
-                // Iterate through the queue data and create a box for each song
-                queue.forEach(song => {
-                    const songBox = document.createElement('div');
-                    songBox.className = 'song-box';
-                    songBox.innerHTML = `
-                        <span>${song}</span>
-                        <button class="remove-button" onclick="removeSong('${song}')">Remove</button>
-                    `;
-                    queueContainer.appendChild(songBox);
-                });
-            })
-            .catch(error => console.error('Error fetching queue:', error));
-    }
-
-    // Initial update of the queue when the page loads
-    updateQueue();
-    setInterval(updateQueue, 500);
+        function removeSong(title) {
+            // Your remove song logic here
+        }
     </script>
 </body>
 </html>
