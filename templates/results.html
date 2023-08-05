@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result Page</title>
+    <style>
+        .song-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        .remove-button {
+            background-color: #ff0000;
+            color: #fff;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hello, {{ username }}!</h1>
+    
+    <h2>Currently Playing: {{ list[0] }}</h2>
+    <h3>Queue</h3>
+    {% for song in list[1] %}
+        <div class="song-box">
+            <span>{{ song }}</span>
+            <button class="remove-button" onclick="removeSong('{{ song }}')">Remove</button>
+        </div>
+    {% endfor %}
+
+    <script>
+    function removeSong(song) {
+        // Send an AJAX request to the server to remove the song from the queue
+        // Replace this with a proper AJAX request using libraries like Axios or fetch API.
+        // For demonstration purposes, we'll just log the song name to the console.
+        console.log(`Removing song: ${song}`);
+
+        // After removing the song, update the queue on the page
+        updateQueue();
+    }
+
+    function updateQueue() {
+        // Fetch the latest queue data from the server
+        // Replace 'http://localhost:5000' with the actual address of your Flask app
+        fetch('http://localhost:5000/get_queue')
+            .then(response => response.json())
+            .then(queue => {
+                // Update the queue data on the page
+                // Replace '#queue-container' with the selector of the container where the queue is displayed
+                const queueContainer = document.querySelector('#queue-container');
+                queueContainer.innerHTML = ''; // Clear the existing content
+
+                // Iterate through the queue data and create a box for each song
+                queue.forEach(song => {
+                    const songBox = document.createElement('div');
+                    songBox.className = 'song-box';
+                    songBox.innerHTML = `
+                        <span>${song}</span>
+                        <button class="remove-button" onclick="removeSong('${song}')">Remove</button>
+                    `;
+                    queueContainer.appendChild(songBox);
+                });
+            })
+            .catch(error => console.error('Error fetching queue:', error));
+    }
+
+    // Initial update of the queue when the page loads
+    updateQueue();
+    setInterval(updateQueue, 500);
+    </script>
+</body>
+</html>
