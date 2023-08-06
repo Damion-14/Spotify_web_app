@@ -5,7 +5,7 @@ import "./App.css";
 import Logo from "./Components/Logo/Logo";
 import GrabUser from "./Components/GrabUser/GrabUser";
  
-const backEnd = "http://localhost:5000";
+const backEndURL = "http://127.0.0.1:5000/";
 
 class App extends Component {
 
@@ -22,9 +22,12 @@ class App extends Component {
   }
 
   onSubmit = () => {
-    fetch(backEnd, {
-
-    });
+    fetch(backEndURL)
+    .then((response) => response.json())
+    .then(responseJSON => console.log(responseJSON))
+    /*
+    .then((data) => {console.log(data)})
+    .catch((error) => {console.log("We had an error: " + error)})*/
   }
 
 render() {
