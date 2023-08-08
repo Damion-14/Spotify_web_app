@@ -5,17 +5,28 @@ import "./App.css";
 import Logo from "./Components/Logo/Logo";
 import GrabUser from "./Components/GrabUser/GrabUser";
  
+const backEnd = "http://localhost:5000";
+
 class App extends Component {
-    // usestate for setting a javascript
-    // object for storing and using data
-    constructor(props) {
-      super(props);
-      this.state = {
-        username: "",
-        taste: []
-      };
-    }
- 
+
+  constructor(props) {
+    super(props);
+    this.state = {
+       username: "",
+       taste: []
+    };
+  }
+
+  onUserChange = (name) => {
+    this.setState({username: name});
+  }
+
+  onSubmit = () => {
+    fetch(backEnd, {
+
+    });
+  }
+
 render() {
       return (
         <div className="App">
@@ -23,7 +34,7 @@ render() {
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet" />
           <Logo />
-          <GrabUser />
+          <GrabUser onSubmit={this.onSubmit} onUserChange={this.onUserChange} />
           {
             /**
              * TODO:

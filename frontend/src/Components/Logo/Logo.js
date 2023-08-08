@@ -19,7 +19,7 @@ const Logo = () => {
                     </div>
                 </Tilt>
             </div>
-            <h1 className="tc" font-size="100%">Welcome to the House Party!</h1>
+            <h1 className="tc" fontSize="100%">Welcome to the House Party!</h1>
         </div>
     );
 }
