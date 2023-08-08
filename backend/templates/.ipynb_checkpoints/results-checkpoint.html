@@ -93,21 +93,25 @@
 
 {% block content %}
     <h1>Hello, {{ username }}!</h1>
-    <div class="queue">
-        <div class="currently-playing">
-            <img src="{{ listx[0][2] }}" class="song-image" alt="Song Image">
-            <h2>{{ listx[0][0] }}</h2>
-        </div>
-        <h3>Queue</h3>
-        {% for song in listx[1] %}
-            <div class="song-box">
-                <img class="song-image" src="{{ song[2] }}" alt="Song Image">
-                <div class="song-details">
-                    <span class="song-title">{{ song[0] }}</span>
-                </div>
+    {% if listx %}
+        <div class="queue">
+            <div class="currently-playing">
+                <img src="{{ listx[0][2] }}" class="song-image" alt="Song Image">
+                <h2>{{ listx[0][0] }}</h2>
             </div>
-        {% endfor %}
-    </div>
+            <h3>Queue</h3>
+            {% for song in listx[1] %}
+                <div class="song-box">
+                    <img class="song-image" src="{{ song[2] }}" alt="Song Image">
+                    <div class="song-details">
+                        <span class="song-title">{{ song[0] }}</span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>User not listening to music</p>
+    {% endif %}
 
     <script>
         function removeSong(title) {
@@ -115,3 +119,4 @@
         }
     </script>
 {% endblock %}
+</html>
