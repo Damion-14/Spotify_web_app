@@ -16,6 +16,7 @@ class UserSpotify:
                                                             scope=scopes))
         user = self.sp.current_user()
         self.username = user['display_name']
+        self.user_id = user['id']
         
         self.currently_playing = None
         self.queue = None
@@ -47,8 +48,8 @@ class UserSpotify:
             print('Error Encountered: ', e)
             return None
 
-    def new_playlist(self, userID, name, add_songs_flag=False, seed_artists=[], seed_genres=[], seed_tracks=[], limit=None,
-                     number_of_songs_to_add=None):
+    def new_playlist(self, name, add_songs_flag=False, seed_artists=[], seed_genres=[], seed_tracks=[], limit=None,
+                     number_of_songs_to_add=None, description='I made this playlist with python'):
         """
         Creates a new playlist with the given 'name' for a given userID.
         You can choose to add songs with the add_songs_flag.
@@ -60,15 +61,15 @@ class UserSpotify:
         if name in user_playlists:
             return 'Playlist name already exists'
         try:
-            playlist = self.sp.user_playlist_create(userID, name, description='I made this playlist with python')
+            playlist = self.sp.user_playlist_create(self.user_id, name, description=description)
             playlist_id = playlist['id']
             if add_songs_flag:
-                self.add_songs(userID, playlist_id, seed_artists=seed_artists, seed_genres=seed_genres, \
+                add_songs = self.add_songs(self.user_id, playlist_id, seed_artists=seed_artists, seed_genres=seed_genres, \
                                seed_tracks=seed_tracks, limit=limit,
                               number_of_songs_to_add=number_of_songs_to_add)
-            print('Playlist created successfully!')
+            return {'message': f'Playlist Created Successfully, {add_songs}'}
         except spotipy.exceptions.SpotifyException as e:
-            print('Error Encountered: ', e)
+            return {'messgae': f'Error Encountered: {e}'}
 
     def add_songs(self, user, playlist_id, seed_artists=[], seed_genres=[], seed_tracks=[], limit=20, number_of_songs_to_add=30):
         """
@@ -77,16 +78,28 @@ class UserSpotify:
         'limit' limits how many songs are returned by recommendations.
         'number_of_songs_to_add' is the number of songs that will be added to the playlist.
         """
-        tracks_to_add = []
-        while len(tracks_to_add) < number_of_songs_to_add:
-            recommended_tracks = self.sp.recommendations(seed_artists=seed_artists, seed_genres=seed_genres,\
-                                                         seed_tracks=seed_tracks, limit=limit)
-            for item in recommended_tracks['tracks']:
-                if item['id'] not in tracks_to_add:
-                    tracks_to_add.append(item['id'])
+        try:
+            tracks_to_add = []
+            while len(tracks_to_add) < number_of_songs_to_add:
+                recommended_tracks = self.sp.recommendations(seed_artists=seed_artists, seed_genres=seed_genres, \
+                                                 seed_tracks=seed_tracks, limit=limit)
+                for item in recommended_tracks['tracks']:
+                    if item['id'] not in tracks_to_add:
+                        tracks_to_add.append(item['id'])
+                        if len(tracks_to_add) >= number_of_songs_to_add:  # Changed > to >=
+                            break
 
-        self.sp.user_playlist_add_tracks(user, playlist_id, tracks_to_add)
-        return
+            if tracks_to_add:
+                self.sp.user_playlist_add_tracks(user, playlist_id, tracks_to_add)
+                return f"{len(tracks_to_add)} tracks added to the playlist"
+            else:
+                return "No recommended tracks found to add to the playlist"
+
+        except spotipy.SpotifyException as e:
+            return f"An error occurred while adding songs: {e}"
+        except Exception as e:
+            return f"An unexpected error occurred: {e}"
+        
     
     def get_playlists(self):
         """
