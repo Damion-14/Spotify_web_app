@@ -1,0 +1,84 @@
+I hope this is how you can interact with the fast_api.py in java script 
+I was using the requests module in python and just asked chat to convert mine to java. 
+
+ALl of the url are post methods
+
+to run the server cd into the backend folder and run 'python fast_api.py'
+
+Nessecary Installs:
+
+'pip install fastapi'
+'pip install uvicorn'
+
+//LOG IN
+
+const url = "http://192.168.1.180:8000/login";
+
+const params = new URLSearchParams({
+    client_id: "779617d6c75e425992d9aad1336fc8e4",
+    client_secret: "a9b25d041321424b8b9ddbbb804ab80e",
+    username: "Damion"
+});
+
+fetch(url, {
+    method: 'POST',
+    body: params,
+})
+.then(response => response.json())
+.then(data => {
+    console.log(data);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+
+//GET QUEUE
+
+const url = "http://192.168.1.180:8000/get_queue";
+
+const params = new URLSearchParams({
+    client_id: "779617d6c75e425992d9aad1336fc8e4"
+});
+
+fetch(url, {
+    method: 'POST',
+    body: params,
+})
+.then(response => response.json())
+.then(data => {
+    const x = data;
+    console.log(x);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+
+
+//NEW PLAYLIST
+
+const url = "http://192.168.1.180:8000/new_playlist"; // Replace with the actual URL of your FastAPI server
+
+// Define the payload (data) to send in the POST request
+const params = {
+    client_id: "779617d6c75e425992d9aad1336fc8e4",
+    name: "fastapi1",
+    add_songs_flag: true,
+    seed_artists: null,
+    seed_genres: null,
+    seed_tracks: "4daEMLSZCgZ2Mt7gNm2SRa,  2WqTKOAUmv7hz9ZzGnXHrY",
+    limit: 20,
+    number_of_songs_to_add: 30
+};
+
+fetch(url, {
+    method: 'POST',
+    body: new URLSearchParams(params),
+})
+.then(response => response.json())
+.then(data => {
+    console.log(data);
+})
+.catch(error => {
+    console.error('Error:', error);
+});
+
