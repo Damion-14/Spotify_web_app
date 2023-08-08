@@ -10,8 +10,7 @@ import time
 app = FastAPI()
 
 # # Create an instance of the UserSpotify class with your Spotify app credentials
-# client_id = "779617d6c75e425992d9aad1336fc8e4"
-# client_secret = "a9b25d041321424b8b9ddbbb804ab80e"
+
 # spotify = UserSpotify(client_id, client_secret)
 
 # Create a dictionary to store UserSpotify instances for each user
@@ -88,8 +87,9 @@ def new_playlist(client_id: str, name: str, add_songs_flag: bool = False, seed_a
 def check_active_users():
     while True:
         now = time.time()
-        for user_id, data in user_instances.items():
-            last_access_time = data.get("last_access_time", now)
+        for user_id in user_instances.keys():
+            last_access_time = user_instances[user_id]['login_time']
+            now = time.time()
             if now - last_access_time > 3600:  # Assume user is inactive after 1 hour
                 user_instances.pop(user_id, None)
         time.sleep(600)  # Check every 10 minutes
