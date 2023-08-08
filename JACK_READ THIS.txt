@@ -3,7 +3,7 @@ I was using the requests module in python and just asked chat to convert mine to
 
 ALl of the url are post methods
 
-to run the server cd into the backend folder and run 'python fast_api.py'
+to run the server, cd into the backend folder and run 'python fast_api.py'
 
 Nessecary Installs:
 
