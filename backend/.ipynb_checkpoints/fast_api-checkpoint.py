@@ -76,10 +76,46 @@ def new_playlist(client_id: str, name: str, add_songs_flag: bool = False, seed_a
                                   seed_tracks, limit, number_of_songs_to_add, description)
     return {"message": result}
 
+@app.post("/add_songs_to_playlist")
+def add_songs_to_playlist(
+    client_id: str,
+    playlist_name: str,
+    seed_artists: str = None,
+    seed_genres: str = None,
+    seed_tracks: str = None,
+    limit: int = None,
+    number_of_songs_to_add: int = None,
+):
+    playlist_id = user_instances[client_id]["instance"].get_playlist_id_from_name(playlist_name)
+    if playlist_id is None:
+        return {"message": f"Playlist '{playlist_name}' not found"}
+
+    result = user_instances[client_id]["instance"].add_songs(
+        user_instances[client_id]["instance"].user_id,
+        playlist_id,
+        seed_artists=seed_artists,
+        seed_genres=seed_genres,
+        seed_tracks=seed_tracks,
+        limit=limit,
+        number_of_songs_to_add=number_of_songs_to_add,
+    )
+    return {"message": result}
 
 
+@app.post("/get_playlists")
+def get_playlists(client_id: str):
+    playlists = user_instances[client_id]["instance"].get_playlists()
+    return {"playlists": playlists}
 
+@app.post("/get_songs_in_playlist")
+def get_songs_in_playlist(client_id: str, playlist_id: str):
+    songs = user_instances[client_id]["instance"].get_songs_in_playlist(playlist_id)
+    return {"songs_in_playlist": songs}
 
+@app.post("/search")
+def search(client_id: str, q: str):
+    search_results = user_instances[client_id]["instance"].get_search_results(q)
+    return {"search_results": search_results}
 
 
 
