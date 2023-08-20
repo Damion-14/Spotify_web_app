@@ -1,9 +1,9 @@
 // Importing modules
 import React, { Component, useState, useEffect } from "react";
 import 'tachyons';
-import "./App.css";
 import Logo from "./Components/Logo/Logo";
 import GrabUser from "./Components/GrabUser/GrabUser";
+import UserInput from "./Components/UserInput/UserInput";
  
 const backEndURL = "http://127.0.0.1:5000/";
 
@@ -25,9 +25,8 @@ class App extends Component {
     fetch(backEndURL)
     .then((response) => response.json())
     .then(responseJSON => console.log(responseJSON))
-    /*
     .then((data) => {console.log(data)})
-    .catch((error) => {console.log("We had an error: " + error)})*/
+    .catch((error) => {console.log("We had an error: " + error)})
   }
 
 render() {
@@ -36,8 +35,12 @@ render() {
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
           <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100&display=swap" rel="stylesheet" />
+
           <Logo />
-          <GrabUser onSubmit={this.onSubmit} onUserChange={this.onUserChange} />
+          <div>
+            <UserInput onUserChange={this.onUserChange} /><br/><br/>
+          </div>
+            <GrabUser onSubmit={this.onSubmit} />
           {
             /**
              * TODO:
