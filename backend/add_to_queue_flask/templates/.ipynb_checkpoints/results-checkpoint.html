@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Result Page</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #0066cc;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .queue-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .queue {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .song-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 500px; /* Take full width available */
+            height: 50px; /* Set the height as needed */
+        }
+
+        .song-image {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+
+        .song-details {
+            flex: 1; /* Take remaining space within .song-box */
+            display: flex;
+            align-items: center;
+        }
+
+        .song-title {
+            flex: 1; /* Take remaining space within .song-details */
+            text-align: center; /* Align the text in the center */
+        }
+
+        .currently-playing {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px; /* Add some space below the currently playing song */
+        }
+
+        .currently-playing .song-image {
+            width: 120px;
+            height: 120px;
+            margin-right: 20px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .remove-button {
+            background-color: #ff3366;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-button:hover {
+            background-color: #ff0044;
+        }
+        .sidebar {
+            width: 300px; /* Set the width of the sidebar */
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            display: none; /* Initially hide the sidebar */
+            overflow: hidden;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.active {
+            width: 350px; /* Expanded width of the sidebar */
+            display: block; /* Show the sidebar when active */
+        }
+
+        .search-bar {
+            margin-bottom: 10px;
+        }
+
+        .search-results {
+            /* Define styles for displaying search results */
+        }
+        
+        /* Styles for search results container */
+        .search-results-container {
+            margin-top: 20px;
+        }
+
+        /* Styles for individual search result box */
+        .search-song-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 300px; /* Take full width available */
+            height: 50px; /* Set the height as needed */
+        }
+
+        /* Style the "Add to Queue" button */
+        .add-button {
+            background-color: #ff3366;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .add-button:hover {
+            background-color: #ff0044;
+        }
+
+        /* Style the "No search results found." message */
+        .no-results {
+            color: #ff3366;
+            text-align: center;
+        }
+
+    </style>
+    
+</head>
+<body>
+    <h1>Hello, {{ username }}!</h1>
+    <button onclick="toggleSidebar()">Toggle Sidebar</button>
+    
+    <div class="container">
+        <div class="queue-container">
+            {% if listx %}
+                <div class="queue">
+                    <div class="currently-playing">
+                        <img id="currentSongImage" class="song-image" alt="Song Image">
+                        <h2 id="currentSongTitle"></h2>
+                    </div>
+                    <h3>Queue</h3>
+                    <div id="queueContainer">
+                        <!-- Queue content will be dynamically updated here -->
+                    </div>
+                </div>
+            {% else %}
+                <p>User not listening to music</p>
+            {% endif %}
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="search-bar">
+                <input type="text" id="search" placeholder="Search...">
+                <button onclick="performSearch()">Search</button>
+            </div>
+            <div class="search-results" id="searchResults">
+                <!-- Display search results here -->
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function updateQueueDisplay(newQueueData) {
+            var currentSongImage = document.getElementById("currentSongImage");
+            var currentSongTitle = document.getElementById("currentSongTitle");
+            currentSongImage.src = newQueueData[0][2];
+            currentSongTitle.textContent = newQueueData[0][0];
+
+            // Update the queue
+            var queueContainer = document.getElementById("queueContainer");
+            var queueHTML = "";
+            for (var i = 0; i < newQueueData[1].length; i++) {
+                var song = newQueueData[1][i];
+                queueHTML += `
+                    <div class="song-box">
+                        <img class="song-image" src="${song[2]}" alt="Song Image">
+                        <div class="song-details">
+                            <span class="song-title">${song[0]}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            queueContainer.innerHTML = queueHTML; 
+        }
+
+
+
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        function performSearch() {
+            var searchInput = document.getElementById('search').value;
+            var searchResultsDiv = document.getElementById('searchResults');
+
+            // Make an AJAX request to the Flask search endpoint
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/search", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Update the search results div with the received HTML
+                        searchResultsDiv.innerHTML = xhr.responseText;
+                    }
+                }
+            };
+
+            // Send the search query as POST data
+            xhr.send("search=" + encodeURIComponent(searchInput));
+        }
+
+        function addToQueue(songTitle, songImage) {
+            var addButton = event.target; // Get the clicked button element
+            var songId = addButton.getAttribute("data-song-id"); // Get the song ID from the attribute
+
+            // Make an AJAX request to the Flask add_to_queue endpoint
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/add_to_queue", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Update the queue or perform any other necessary actions
+                    }
+                }
+            };
+
+            // Send the song ID as POST data
+            xhr.send("song_id=" + encodeURIComponent(songId));
+        }
+        
+        function updateQueue() {
+            $.ajax({
+                url: '/queue_data',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data)
+                    if (JSON.stringify(data) !== JSON.stringify(currentQueue)) {
+                        currentQueue = data;
+                        updateQueueDisplay(data); // Call the function to update the display
+                    }
+                }
+            });
+        }
+
+        let currentQueue = []; // Change from {} to []
+
+        $(document).ready(function() {
+            // Call the updateQueue function every 5 seconds
+            setInterval(updateQueue, 5000);
+        });
+    </script>
+</body>
+</html>

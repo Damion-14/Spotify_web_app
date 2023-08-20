@@ -9,15 +9,15 @@ class UserSpotify:
         self.client_secret = client_secret
         redirect_uri = "http://localhost:8080/"  # This should match the redirect URI set in your Spotify app
         scopes = ['playlist-modify-public', 'playlist-modify-private', 'user-read-playback-state', \
-                  'app-remote-control', 'streaming']  # Add necessary scopes here
+                  'app-remote-control']  # Add necessary scopes here
 
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id,
                                                             client_secret=self.client_secret,
                                                             redirect_uri=redirect_uri,
                                                             scope=scopes))
-        user = self.sp.current_user()
-        self.username = user['display_name']
-        self.user_id = user['id']
+        # user = self.sp.current_user()
+        # self.username = user['display_name']
+        # self.user_id = user['id']
         
         self.currently_playing = None
         self.queue = None

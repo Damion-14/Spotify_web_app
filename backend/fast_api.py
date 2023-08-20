@@ -26,7 +26,7 @@ def login(request: Request, client_id: str, client_secret: str, username: str):
     
     # Check if the user already exists in the CSV file
     user_exists = False
-    with open('/home/orangepi/Documents/Code/Spotify_web_app/backend/user_data/users_csv.csv', 'r') as f:
+    with open('/home/orangepi/Documents/code/Spotify_web_app/backend/user_data/users_csv.csv', 'r') as f:
         reader = csv.reader(f)
         for row in reader:
             if row and row[0] == client_id:
@@ -38,7 +38,7 @@ def login(request: Request, client_id: str, client_secret: str, username: str):
     
     if not user_exists:
         # If user doesn't exist, add the user to the CSV file
-        with open('/home/orangepi/Documents/Code/Spotify_web_app/backend/user_data/users_csv.csv', 'a') as f:
+        with open('/home/orangepi/Documents/code/Spotify_web_app/backend/user_data/users_csv.csv', 'a') as f:
             writer = csv.writer(f)
             writer.writerow([client_id, client_secret, client_ip])
             
@@ -117,8 +117,10 @@ def search(client_id: str, q: str):
     search_results = user_instances[client_id]["instance"].get_search_results(q)
     return {"search_results": search_results}
 
-
-
+@app.post("/add_to_queue")
+def search(client_id: str, songID: str):
+    result = user_instances[client_id]["instance"].add_to_queue(songID)
+    return {"add to queue": search_results}
 
 def check_active_users():
     while True:
@@ -134,6 +136,15 @@ def check_active_users():
 background_tasks = BackgroundTasks()
 background_tasks.add_task(check_active_users)
 
-if __name__ == "__main__":
+
+def run_app():
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run(app, host="192.168.0.123", port=8000)
+
+# Add the background task to check active users
+background_tasks = BackgroundTasks()
+background_tasks.add_task(check_active_users)
+
+if __name__ == "__main__":
+    # Run the FastAPI application using uvicorn when the script is executed
+    run_app()

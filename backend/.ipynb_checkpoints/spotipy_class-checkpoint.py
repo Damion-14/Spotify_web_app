@@ -8,7 +8,8 @@ class UserSpotify:
         self.client_id = client_id
         self.client_secret = client_secret
         redirect_uri = "http://localhost:8080/"  # This should match the redirect URI set in your Spotify app
-        scopes = ['playlist-modify-public', 'playlist-modify-private', 'user-read-playback-state']  # Add necessary scopes here
+        scopes = ['playlist-modify-public', 'playlist-modify-private', 'user-read-playback-state', \
+                  'app-remote-control', 'streaming']  # Add necessary scopes here
 
         self.sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=self.client_id,
                                                             client_secret=self.client_secret,
@@ -156,3 +157,7 @@ class UserSpotify:
     def get_song_album_cover(self, songID, image = 2):
         albumID = self.sp.track(songID)['album']
         return albumID['images'][image]['url']
+
+    def add_song_to_queue(self, songID):
+        result = self.sp.add_to_queue(songID)
+        return result

@@ -27,8 +27,8 @@ def queue():
     if UserOBJ is not None:
         queue = UserOBJ.get_queue()
         if queue is not None:
-            return render_template('results.html', username=UserOBJ.username, listx=queue)
-    return render_template('results.html', username=UserOBJ.username, listx=queue)
+            return render_template('results1.html', username=UserOBJ.username, listx=queue)
+    return render_template('results1.html', username=UserOBJ.username, listx=queue)
 
 @app.route('/get_queue', methods=['GET'])
 def get_queue():
@@ -39,6 +39,32 @@ def get_queue():
     else:
         return jsonify([])  # Return an empty queue if UserOBJ is not initialized
 
+    
+@app.route('/queue_data')
+def queue_data():
+    global UserOBJ
+    if UserOBJ is not None:
+        queue = UserOBJ.get_queue()
+        if queue is not None:
+            
+            return queue
+    return []
+
+@app.route('/search_queue', methods=['POST'])
+def search_queue():
+    global UserOBJ
+    search_results = None
+    if request.method == 'POST': 
+        search_query = request.form['search']
+        if UserOBJ is not None:
+            search_results = UserOBJ.get_search_results(search_query)
+            
+            for idx in range(len(search_results)):
+                img_url = UserOBJ.get_song_album_cover(search_results[idx][-1])
+                search_results[idx].append(img_url)
+                
+            return render_template('search_results.html', search_results=search_results)
+    return ""
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     global UserOBJ
@@ -94,5 +120,17 @@ def new_playlist():
         return "Playlist created successfully!"
 
     return render_template('new_playlist.html')
+
+@app.route('/add_to_queue', methods=['POST'])
+def add_to_queue():
+    global UserOBJ
+    if request.method == 'POST': 
+        song_id = request.form.get('song_id')  # Retrieve the song ID from the request
+        print(song_id)
+        if UserOBJ is not None:
+            UserOBJ.add_song_to_queue(song_id)
+
+    return "Song added to queue"  # Return a response indicating success
+    
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
