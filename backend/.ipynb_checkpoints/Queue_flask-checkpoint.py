@@ -27,10 +27,13 @@ def login():
 @app.route('/queue')
 def queue():
     global UserOBJ
+    print(UserOBJ)
     if UserOBJ is not None:
         queue = UserOBJ.get_queue()
         if queue is not None:
             return render_template('results1.html', username=UserOBJ.username, listx=queue)
+        else:
+            return render_template('results1.html', username=UserOBJ.username, listx=None)
     return redirect(url_for('login'))
     
 @app.route('/queue_data')

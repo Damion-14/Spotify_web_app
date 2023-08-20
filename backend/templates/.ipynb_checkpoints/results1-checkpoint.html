@@ -260,7 +260,7 @@
         }
         @media (max-width: 767px){
             .search-bar {
-            margin-top: 40px; /* Add some space at the bottom */
+            margin-top: 50px; /* Add some space at the bottom */
             }
         }
 
@@ -298,7 +298,7 @@
 </head>
 <body>
     <h1>Hello!</h1>
-    <button class="toggle-button" onclick="toggleSidebar()">Expand</button>
+    <button class="toggle-button" onclick="toggleSidebar()">Search</button>
     
     <div class="container">
         <div class="queue-container">
@@ -383,7 +383,7 @@
             if (sidebar.classList.contains('active')) {
                 button.textContent = 'Collapse';
             } else {
-                button.textContent = 'Expand';
+                button.textContent = 'Search';
             }
         }
 
