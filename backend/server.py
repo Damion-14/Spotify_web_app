@@ -1,15 +1,15 @@
-from flask import Flask
+from flask import Flask, make_response, jsonify
 
 app = Flask(__name__)
 
-@app.route('/data')
-def get_data():
-    
-    return {
-        'Name': "Jack",
-        "Age": "21",
-        "programming": "python"
-    }
+@app.route("/")
+def data():
+    resp = make_response(jsonify(
+        username="Jack",
+        taste=["rap", "rock"]
+        ))
+    resp.headers['Access-Control-Allow-Origin'] = '*'
+    return resp
 
 """
 @app.route('/')
