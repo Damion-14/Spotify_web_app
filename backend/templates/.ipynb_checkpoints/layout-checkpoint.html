@@ -25,11 +25,15 @@
             padding: 0;
             margin: 0;
             display: flex;
-            justify-content: center;
+            align-items: center; /* Center vertically */
         }
 
         nav li {
             margin: 0 10px;
+        }
+
+        nav .home-link {
+            margin-right: auto; /* Pushes the link to the far left */
         }
 
         nav a {
@@ -53,6 +57,12 @@
 <body>
     <nav>
         <ul>
+            <li class="home-link">
+                <a href="/home">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5jZLWDvXtdd7sljzt3lzJWWNJUnnrvVyxhg&usqp=CAU" alt="Home" style="width: 20px; height: 20px; margin-right: 5px;">
+                    Home
+                </a>
+            </li>
             <li><a href="/queue">Queue</a></li>
             <li><a href="/new_playlist">New</a></li>
             <li><a href="/search">Search</a></li>

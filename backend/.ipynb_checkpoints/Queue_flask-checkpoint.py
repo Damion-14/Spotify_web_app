@@ -7,7 +7,10 @@ UserOBJ = None  # Global variable to store the UserSpotify object
 
 @app.route('/home', methods=['GET', 'POST'])
 def home():
-    pass
+    global UserOBJ
+    if UserOBJ is not None:
+        return render_template('home.html')
+    return redirect(url_for('login'))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -28,17 +31,7 @@ def queue():
         queue = UserOBJ.get_queue()
         if queue is not None:
             return render_template('results1.html', username=UserOBJ.username, listx=queue)
-    return render_template('results1.html', username=UserOBJ.username, listx=queue)
-
-@app.route('/get_queue', methods=['GET'])
-def get_queue():
-    global UserOBJ
-    if UserOBJ is not None:
-        queue = UserOBJ.get_queue()
-        return jsonify(queue)
-    else:
-        return jsonify([])  # Return an empty queue if UserOBJ is not initialized
-
+    return redirect(url_for('login'))
     
 @app.route('/queue_data')
 def queue_data():
