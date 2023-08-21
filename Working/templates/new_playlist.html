@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+    <title>Create New Playlist</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            color: #0066cc;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            width: 300px;
+        }
+
+        input[type="checkbox"] {
+            margin-top: 10px;
+        }
+
+        input[type="submit"] {
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100px;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0052b3;
+        }
+    </style>
+</head>
+{% extends "layout.html" %}
+
+{% block title %}New{% endblock %}
+    
+{% block content %}
+<body>
+    <h1>Create New Playlist</h1>
+    <form action="/new_playlist" method="post">
+        <label for="name">Playlist Name:</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="userID">User ID:</label>
+        <input type="text" id="userID" name="userID" required>
+
+        <label for="add_songs">Add Songs:</label>
+        <input type="checkbox" id="add_songs" name="add_songs" value="1">
+
+        <label for="seed_artists">Seed Artists:</label>
+        <input type="text" id="seed_artists" name="seed_artists">
+
+        <label for="seed_genres">Seed Genres:</label>
+        <input type="text" id="seed_genres" name="seed_genres">
+
+        <label for="seed_tracks">Seed Tracks:</label>
+        <input type="text" id="seed_tracks" name="seed_tracks">
+
+        <label for="limit">Limit:</label>
+        <input type="number" id="limit" name="limit" min="1" max="100" required>
+
+        <label for="number_of_songs_to_add">Number of Songs to Add:</label>
+        <input type="number" id="number_of_songs_to_add" name="number_of_songs_to_add" min="1" max="100" required>
+
+        <input type="submit" value="Create Playlist">
+    </form>
+</body>
+
+{% endblock %}
+</html>

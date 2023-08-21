@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% extends "layout.html" %}
+
+{% block title %}Login{% endblock %}
+<head>
+    <title>Login Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .login-container {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+        }
+
+        h1 {
+            color: #0066cc;
+            text-align: center;
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            width: 100%; /* Make the input boxes take the full width */
+        }
+
+        input[type="submit"] {
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%; /* Make the submit button take the full width */
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0052b3;
+        }
+    </style>
+    
+
+{% block content %}
+<body>
+    <div class="login-container">
+        <h1>Login</h1>
+        <form action="/login" method="post">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" required>
+            <br> <!-- Add a line break -->
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" required>
+            <br> <!-- Add a line break -->
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+{% endblock %}

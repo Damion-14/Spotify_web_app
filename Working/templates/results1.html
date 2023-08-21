@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html>
+{% extends "layout.html" %}
+
+{% block title %}Queue{% endblock %}
+
+{% block content %}
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Result Page</title>
+    <style>
+        h1 {
+            color: #0066cc;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Ensure the page occupies full height */
+        body, html {
+            font-family: "Helvetica Neue", Arial, sans-serif;
+            background-color: #FFFFFF;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+
+        .queue-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .queue {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+            width: 100%; /* Set the width to 100% for mobile devices */
+            max-width: 500px; /* Add a max-width for larger screens to prevent excessive width */
+        }
+
+        /* Styles for individual song box */
+        .song-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 40vw; /* Set the width to 100% of the viewport width */
+            height: 50px; /* Set the height as needed */
+        }
+         
+        /* Media query for mobile devices */
+        @media (max-width: 767px) {
+            .song-box {
+                width: 70vw; /* Adjust the width for mobile devices */
+            }
+        }
+
+
+        /* Styles for song images */
+        .song-image {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            border-radius: 50%;
+            object-fit: cover;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+        }
+
+
+        /* Styles for individual search result box */
+        .search-song-box {
+            display: flex;
+            align-items: center;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 250px; /* Take full width available */
+            min-height: 60px; /* Adjust the height to accommodate two lines of text */
+        }
+
+        /* Style the song details */
+        .song-details {
+            font-size: 14px;
+            flex: 1;
+            display: flex;
+            flex-direction: column; /* Arrange text in a column */
+        }
+
+        .song-title {
+            flex: 1; /* Take remaining space within .song-details */
+            text-align: center; /* Align the text in the center */
+            white-space: normal; /* Allow text to wrap and take up multiple lines */
+            line-height: 1.2; /* Adjust line height for better readability */
+        }
+        .currently-playing {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px; /* Add some space below the currently playing song */
+        }
+
+        .currently-playing .song-image {
+            width: 120px;
+            height: 120px;
+            margin-right: 20px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .remove-button {
+            background-color: #BC8B6B;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-button:hover {
+            background-color: #A25E33;
+        }
+
+        .search-bar {
+            margin-bottom: 10px;
+        }
+
+        .search-results {
+            /* Define styles for displaying search results */
+        }
+        
+        /* Styles for search results container */
+        .search-results-container {
+            margin-top: 20px;
+            height: 100vh; /* Set the desired height */
+            overflow-y: auto; /* Enable vertical scrolling if content overflows */
+        }
+
+        /* Style the "Add to Queue" button */
+        .add-button {
+            font-size: 13px;
+            background-color: #ff3366;
+            color: #fff;
+            border: none;
+            padding: 5px 10px; /* Adjust padding for smaller buttons */
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+
+            /* Set the desired width and height for the button */
+            width: 100px;
+            height: 30px;
+
+            /* Center text horizontally and vertically */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+
+
+        .add-button:hover {
+            background-color: #ff0044;
+        }
+
+        /* Style the "No search results found." message */
+        .no-results {
+            color: #D45400;
+            text-align: center;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            height: 100vh;
+            width: 300px;
+            background-color: #FFFFFF;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 1);
+            padding: 20px;
+            overflow: hidden;
+            transition: left 0.5s ease;
+        }
+
+        .sidebar::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 1px; /* Adjust the line width */
+            height: 100%;
+            background-color: #ccc; /* Color of the line */
+            box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1); /* Shadow on the line */
+        }
+
+
+        .sidebar.active {
+            left: 0; /* Move the sidebar to the left edge */
+            width: 300px;
+        }
+
+        /* Common styles for the toggle button */
+        .toggle-button {
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 20px;
+            transition: background-color 0.3s ease;
+            z-index: 999;
+            position: fixed; /* Always set the position to fixed */
+        }
+
+        /* Style for desktop users */
+        @media (min-width: 768px) {
+            .toggle-button {
+                top: 50px;
+                left: 20px;
+            }
+        }
+
+        /* Style for mobile users */
+        @media (max-width: 767px) {
+            .toggle-button {
+                bottom: 20px;
+                left: 20%; /* Center horizontally */
+                transform: translateX(-50%); /* Center horizontally */
+            }
+        }
+
+
+
+        .toggle-button:hover {
+            background-color: #0052a3;
+        }
+
+        .search-bar {
+            margin-top: 80px; /* Add some space at the bottom */
+        }
+        @media (max-width: 767px){
+            .search-bar {
+            margin-top: 50px; /* Add some space at the bottom */
+            }
+        }
+
+        /* Style the search input */
+        #search {
+            width: 175px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        #search:focus {
+            border-color: #0066cc;
+        }
+
+        /* Style the search button */
+        #searchButton {
+            background-color: #0066cc;
+            color: #fff;
+            border: none;
+            padding: 8px 15px;
+            cursor: pointer;
+            border-radius: 20px;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+
+        #searchButton:hover {
+            background-color: #0052a3;
+        }
+    </style>
+    
+</head>
+<body>
+    <h1>Hello!</h1>
+    <button class="toggle-button" onclick="toggleSidebar()">Search</button>
+    
+    <div class="container">
+        <div class="queue-container">
+            {% if listx %}
+                <div class="queue">
+                    <div class="currently-playing">
+                        <img id="currentSongImage" class="song-image" alt="Song Image" src="{{ listx[0][2] }}">
+                        <h2 id="currentSongTitle">{{ listx[0][0] }}</h2>
+                    </div>
+                    <h3>Queue</h3>
+                    <div id="queueContainer">
+                        {% for song in listx[1] %}
+                            <div class="song-box">
+                                <img class="song-image" src="{{ song[2] }}" alt="Song Image">
+                                <div class="song-details">
+                                    <span class="song-title">{{ song[0] }}</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% else %}
+                <p>User not listening to music</p>
+            {% endif %}
+        </div>
+
+
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="search-bar">
+                <input type="text" id="search" name="search" placeholder="Search..." onkeydown="handleSearchKeyDown(event)">
+                <input id="searchButton" type="button" value="Search" onclick="performSearch()">
+
+            </div>
+
+
+            <div class="search-results" id="searchResults">
+                <!-- Display search results here -->
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function handleSearchKeyDown(event) {
+            if (event.key === "Enter") {
+                performSearch();
+                event.preventDefault(); // Prevent form submission
+            }
+        }
+        
+        
+        function updateQueueDisplay(newQueueData) {
+            var currentSongImage = document.getElementById("currentSongImage");
+            var currentSongTitle = document.getElementById("currentSongTitle");
+            currentSongImage.src = newQueueData[0][2];
+            currentSongTitle.textContent = newQueueData[0][0];
+
+            // Update the queue
+            var queueContainer = document.getElementById("queueContainer");
+            var queueHTML = "";
+            for (var i = 0; i < newQueueData[1].length; i++) {
+                var song = newQueueData[1][i];
+                queueHTML += `
+                    <div class="song-box">
+                        <img class="song-image" src="${song[2]}" alt="Song Image">
+                        <div class="song-details">
+                            <span class="song-title">${song[0]}</span>
+                        </div>
+                    </div>
+                `;
+            }
+            queueContainer.innerHTML = queueHTML; 
+        }
+
+
+
+        function toggleSidebar() {
+            var sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+
+            var button = document.querySelector('.toggle-button');
+            if (sidebar.classList.contains('active')) {
+                button.textContent = 'Collapse';
+            } else {
+                button.textContent = 'Search';
+            }
+        }
+
+
+        function performSearch() {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            var searchInput = document.getElementById('search').value;
+            var searchResultsContainer = document.getElementById('searchResults');
+
+            // Make an AJAX request to the Flask search endpoint
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/search_queue", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Update the search results container with the received HTML
+                        searchResultsContainer.innerHTML = xhr.responseText;
+                    }
+                }
+            };
+
+            // Send the search query as POST data
+            xhr.send("search=" + encodeURIComponent(searchInput));
+
+            return false; // Prevent the form from navigating to a new page
+        }
+
+
+
+        // ...
+
+        // Inside the addToQueue function:
+        function addToQueue(button) {
+            var songId = button.getAttribute("data-song-id");
+
+            // Make an AJAX request to the Flask add_to_queue endpoint
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "/add_to_queue", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Perform any necessary actions after adding to queue
+                    }
+                }
+            };
+
+            // Send the song ID as POST data
+            xhr.send("song_id=" + encodeURIComponent(songId));
+        }
+
+        
+        function updateQueue() {
+            $.ajax({
+                url: '/queue_data',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (JSON.stringify(data) !== JSON.stringify(currentQueue)) {
+                        currentQueue = data;
+                        updateQueueDisplay(data); // Call the function to update the display
+                    }
+                }
+            });
+        }
+
+        let currentQueue = [];
+        $(document).ready(function() {
+            
+            // Call the updateQueue function every 1 second (1000 milliseconds)
+            setInterval(updateQueue, 30000);
+        });
+    </script>
+</body>
+    {% endblock %}
+</html>

@@ -1,0 +1,16 @@
+{% if search_results %}
+    <div class="search-results-container">
+        <h3>Search Results</h3>
+        {% for result in search_results %}
+            <div class="search-song-box">
+                <img class="song-image" src="{{ result[3] }}" alt="Song Image">
+                <div class="song-details">
+                    <span class="song-title">{{ result[0] }}</span>
+                </div>
+                <button class="add-button" data-song-id="{{ result[2] }}" onclick="addToQueue(this)">Add to Queue</button>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="no-results">No search results found.</p>
+{% endif %}
