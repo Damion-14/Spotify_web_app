@@ -8,8 +8,8 @@ app = Flask(__name__)
 
 # client_secret = input('What is your client secret? ')
 
-client_id = "f37f818b564747d2b4544dec97671b36"
-client_secret = "c0e61c93a6e546888f5d463ccae09d8e"
+client_id = "bba8302d91d847069819fb577ca31532"
+client_secret = "c69f6530e509496aae28290f5e68b080"
 
 UserOBJ = UserSpotify("93302b3440374f75bd84102271a41701", "218fdcfb4bab4abf9157c6b8be5d71f8")
 print(UserOBJ)
