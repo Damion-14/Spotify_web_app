@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify App Credentials</title>
+</head>
+<body>
+    <h1>Enter Your Spotify App Credentials</h1>
+    <form action="/login" method="POST">
+        <label for="client_id">Client ID:</label>
+        <input type="text" id="client_id" name="client_id" required><br><br>
+        
+        <label for="client_secret">Client Secret:</label>
+        <input type="password" id="client_secret" name="client_secret" required><br><br>
+        
+        <label for="redirect_uri">Redirect URI:</label>
+        <input type="text" id="redirect_uri" name="redirect_uri" required><br><br>
+        
+        <input type="submit" value="Login with Spotify">
+    </form>
+</body>
+</html>
