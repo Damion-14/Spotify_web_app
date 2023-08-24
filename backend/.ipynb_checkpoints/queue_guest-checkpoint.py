@@ -20,8 +20,8 @@ def queue():
 
         queue = UserOBJ.get_queue()
         if queue is not None:
-            return render_template('results1.html', username=UserOBJ.username, listx=queue)
-    return render_template('results1.html', username=UserOBJ.username, listx=queue)
+            return render_template('queue_guest.html', username=UserOBJ.username, listx=queue)
+    return render_template('queue_guest.html', username=UserOBJ.username, listx=queue)
 
 @app.route('/queue_data')
 def queue_data():

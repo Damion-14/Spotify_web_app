@@ -20,8 +20,8 @@ def queue():
 
         queue = UserOBJ.get_queue()
         if queue is not None:
-            return render_template('results1.html', username=UserOBJ.username, listx=queue)
-    return render_template('results1.html', username=UserOBJ.username, listx=queue)
+            return render_template('queue_guest.html', username=UserOBJ.username, listx=queue)
+    return render_template('queue_guest.html', username=UserOBJ.username, listx=queue)
 
 @app.route('/queue_data')
 def queue_data():
@@ -59,6 +59,15 @@ def add_to_queue():
             UserOBJ.add_song_to_queue(song_id)
 
     return "Song added to queue"  # Return a response indicating success
+    
+    
+@app.route('/dislike_song', methods=['POST'])
+def dislike():
+    song_id = request.form.get('songId')
+    action = request.form.get('action')
+    
+    
+    
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
