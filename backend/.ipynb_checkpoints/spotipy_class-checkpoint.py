@@ -161,3 +161,29 @@ class UserSpotify:
     def add_song_to_queue(self, songID):
         result = self.sp.add_to_queue(songID)
         return result
+    
+    def skip_song(self):
+        self.sp.next_track()
+        return "Skipped"
+    
+    def clear_song_from_queue(self, songid):
+        current_queue = self.get_queue()
+        #[[name, songid, album cover url]]
+        
+        self.sp.pause_playback()
+        # Skip through the tracks to clear the queue
+        print((range(len(current_queue[1]) - 2)))
+        for x in range(len(current_queue[1]) - 2):
+            self.sp.next_track()
+            
+        self.sp.start_playback()
+        for song in current_queue[1]:
+            if song[1] == songid:
+                #skip song that is passed...aka remove it from being added bach to the queue
+                continue
+            #add song to queue
+            print(song[1])
+            self.sp.add_to_queue(song[1])
+        return "removed from queue"
+        
+        
