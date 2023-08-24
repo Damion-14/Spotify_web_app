@@ -362,9 +362,8 @@
     <script>
         function toggleDislike(icon){
             var songId = icon.getAttribute("data-song-id");
-            var action = icon.classList.contains('active') ? 'unlike' : 'like';
-            
-            console.log(action);
+            var action = icon.classList.contains('active') ? 'remove thumbs down' : 'thumbs down';
+        
             icon.classList.toggle('active'); // Toggles the 'active' class
             if (icon.classList.contains('active')) { 
               icon.classList.replace('far', 'fas'); // Replace class for filled heart
@@ -387,6 +386,7 @@
         
         function toggleLike(icon) {
             var songId = icon.getAttribute("data-song-id");
+            var action = icon.classList.contains('active') ? 'remove Love' : 'Love';
         
             icon.classList.toggle('active'); // Toggles the 'active' class
             if (icon.classList.contains('active')) {//add to liked songs
@@ -394,6 +394,18 @@
             } else {//remove from liked songs
               icon.classList.replace('fas', 'far'); // Replace class for thin heart
             }
+            
+            $.ajax({
+                url: '/update_like_status',
+                method: 'POST',
+                data: { songId: songId, action: action },
+                success: function (response) {
+                    // Handle success, maybe update the UI or perform other actions
+                },
+                error: function (error) {
+                    // Handle error
+                }
+            });
           }
         function handleSearchKeyDown(event) {
             if (event.key === "Enter") {

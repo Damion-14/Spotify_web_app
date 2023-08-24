@@ -61,13 +61,14 @@ def add_to_queue():
     return "Song added to queue"  # Return a response indicating success
     
     
-@app.route('/dislike_song', methods=['POST'])
+@app.route('/update_like_status', methods=['POST'])
 def dislike():
     song_id = request.form.get('songId')
     action = request.form.get('action')
+    print(song_id)
+    print(action)
     
-    
-    
+    return "Recieved"
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
