@@ -13,13 +13,21 @@ client_secret = "c0e61c93a6e546888f5d463ccae09d8e"
 
 UserOBJ = UserSpotify("93302b3440374f75bd84102271a41701", "218fdcfb4bab4abf9157c6b8be5d71f8")
 
-liked_songs = []
-disliked_songs = []
+liked_songs = {}
+disliked_songs = {}
+
+class Node:
+    def __init__(self, queue):
+        self.data = queue[0]
+        self.next = queue[1][0]
+        
+queue = UserOBJ.get_queue()
+node_obj = Node(queue)
 
 print(UserOBJ)
 @app.route('/queue')
 def queue():
-    global UserOBJ, liked_songs, disliked_songs
+    global UserOBJ, liked_songs, disliked_songs, node_obj
     if UserOBJ is not None:
         
         old_liked_songs = liked_songs
@@ -28,6 +36,10 @@ def queue():
         liked_songs = []
         disliked_songs = []
         queue = UserOBJ.get_queue()
+        
+        node_obj.data = queue[0]
+        node_obj.next = queue[1][0]
+        
         for song in queue[1]:
             if song[1] in old_liked_songs:
                 liked_songs.append(song[1])
@@ -92,26 +104,33 @@ def add_to_queue():
     
     
 @app.route('/update_like_status', methods=['POST'])
-def dislike():
+def update_like_status():
     global UserOBJ, liked_songs, disliked_songs
+    
+    user_ip = request.remote_addr
+    if liked_songs == {}:
+        liked_songs[user_ip] = []
+        disliked_songs[user_ip] = []
+   
     song_id = request.form.get('songId')
     action = request.form.get('action')
     print(song_id)
     print(action)
     if action == 'Love':
         #do something
-        liked_songs.append(song_id)
+        
+        liked_songs[user_ip].append(song_id)
     if action == 'remove Love':
         #do something
        # UserOBJ.skip_song()
-        liked_songs.remove(song_id)
+        liked_songs[user_ip].remove(song_id)
     if action == 'thumbs down':
         #do someting
-        #UserOBJ.clear_song_from_queue(song_id)
-        disliked_songs.append(song_id)
+        UserOBJ.clear_song_from_queue(song_id)
+        disliked_songs[user_ip].append(song_id)
     if action == 'remove thumbs down':
         #do something
-        disliked_songs.remove(song_id)
+        disliked_songs[user_ip].remove(song_id)
         
         
     

@@ -175,6 +175,7 @@ class UserSpotify:
         print((range(len(current_queue[1]) - 2)))
         for x in range(len(current_queue[1]) - 2):
             self.sp.next_track()
+            self.sp.pause_playback()
             
         self.sp.start_playback()
         for song in current_queue[1]:

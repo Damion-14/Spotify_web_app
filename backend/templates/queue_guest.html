@@ -362,11 +362,9 @@
     <script>
         function toggleDislike(icon){
             var songId = icon.getAttribute("data-song-id");
-            var action = icon.classList.contains('active') ? 'remove Love' : 'Love';
-
+            var action = icon.classList.contains('active') ? 'remove thumbs down' : 'thumbs down';
+        
             icon.classList.toggle('active'); // Toggles the 'active' class
-            currentQueue[1].find(song => song[1] === songId)[3] = icon.classList.contains('active') ? 1 : 0; // Update the like status
-    
             if (icon.classList.contains('active')) { 
               icon.classList.replace('far', 'fas'); // Replace class for filled heart
             } else {// remove from disliked songs
@@ -387,12 +385,10 @@
         }
         
         function toggleLike(icon) {
-           var songId = icon.getAttribute("data-song-id");
-            var action = icon.classList.contains('active') ? 'remove thumbs down' : 'thumbs down';
-
+            var songId = icon.getAttribute("data-song-id");
+            var action = icon.classList.contains('active') ? 'remove Love' : 'Love';
+        
             icon.classList.toggle('active'); // Toggles the 'active' class
-            currentQueue[1].find(song => song[1] === songId)[4] = icon.classList.contains('active') ? -1 : 0; // Update the dislike status
-    
             if (icon.classList.contains('active')) {//add to liked songs
               icon.classList.replace('far', 'fas'); // Replace class for filled heart
             } else {//remove from liked songs
@@ -437,8 +433,8 @@
                             <span class="song-title">${song[0]}</span>
                         </div>
                         <div class="song-actions">
-                            <i class="far fa-heart heart-icon ${song[3] === 1 ? 'active' : ''}" onclick="toggleLike(this)" data-song-id="${song[1]}"></i>
-                            <i class="far fa-thumbs-down ${song[4] === -1 ? 'active' : ''}" onclick="toggleDislike(this)" data-song-id="${song[1]}"></i>
+                            <i class="far fa-heart heart-icon" onclick="toggleLike(this)" data-song-id="${song[1]}"></i>
+                            <i class="far fa-thumbs-down" onclick="toggleDislike(this)" data-song-id="${ song[1] }"></i>
                         </div>
                     </div>
                 `;
