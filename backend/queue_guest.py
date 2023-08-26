@@ -17,9 +17,13 @@ liked_songs = {}
 disliked_songs = {}
 
 class Node:
-    def __init__(self, queue):
-        self.data = queue[0]
-        self.next = queue[1][0]
+    def __init__(self, data, next):
+        self.data = data
+        self.next = next
+
+    def displayData(self):
+        print(self.data)
+        print(self.next)
         
 queue = UserOBJ.get_queue()
 node_obj = Node(queue)
