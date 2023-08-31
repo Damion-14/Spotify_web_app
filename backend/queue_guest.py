@@ -16,6 +16,22 @@ UserOBJ = UserSpotify("93302b3440374f75bd84102271a41701", "218fdcfb4bab4abf9157c
 liked_songs = {}
 disliked_songs = {}
 
+<<<<<<< HEAD
+=======
+class Node:
+    def __init__(self, data, next):
+        self.data = data
+        self.next = next
+
+    def displayData(self):
+        print(self.data)
+        print(self.next)
+        
+queue = UserOBJ.get_queue()
+node_obj = Node(queue)
+
+print(UserOBJ)
+>>>>>>> 97206464b8954699b43fc0428ade05a6ff46affe
 @app.route('/queue')
 def queue():
     global UserOBJ, liked_songs, disliked_songs, node_obj
