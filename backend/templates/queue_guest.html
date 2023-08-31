@@ -329,13 +329,22 @@
                                     <span class="song-title">{{ song[0] }}</span>
                                 </div>
                                 <div class="song-actions">
-                                    <i class="far fa-heart heart-icon" onclick="toggleLike(this)" data-song-id="{{ song[1] }}"></i>
-                                    <i class="far fa-thumbs-down" onclick="toggleDislike(this)" data-song-id="{{ song[1] }}"></i>
+                                    {% if song[3] %}
+                                        <i class="fas fa-heart heart-icon" onclick="toggleLike(this)" data-song-id="{{ song[1] }}"></i>
+                                    {% else %}
+                                        <i class="far fa-heart heart-icon" onclick="toggleLike(this)" data-song-id="{{ song[1] }}"></i>
+                                    {% endif %}
 
+                                    {% if song[4] %}
+                                        <i class="fas fa-thumbs-down" onclick="toggleDislike(this)" data-song-id="{{ song[1] }}"></i>
+                                    {% else %}
+                                        <i class="far fa-thumbs-down" onclick="toggleDislike(this)" data-song-id="{{ song[1] }}"></i>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endfor %}
                     </div>
+
                 </div>
             {% else %}
                 <p>User not listening to music</p>
@@ -424,20 +433,29 @@
             // Update the queue with song actions buttons
             var queueContainer = document.getElementById("queueContainer");
             var queueHTML = "";
+            get_song_status()
             for (var i = 0; i < newQueueData[1].length; i++) {
                 var song = newQueueData[1][i];
-                queueHTML += `
-                    <div class="song-box">
-                        <img class="song-image" src="${song[2]}" alt="Song Image">
-                        <div class="song-details">
-                            <span class="song-title">${song[0]}</span>
-                        </div>
-                        <div class="song-actions">
-                            <i class="far fa-heart heart-icon" onclick="toggleLike(this)" data-song-id="${song[1]}"></i>
-                            <i class="far fa-thumbs-down" onclick="toggleDislike(this)" data-song-id="${ song[1] }"></i>
-                        </div>
-                    </div>
-                `;
+                console.log('Songs: ', songs);
+                var isLiked = songs[0].includes(song[1]);
+                var isDisliked = songs[1].includes(song[1]);
+                
+                 // Set appropriate classes based on liked or disliked status
+                var heartIconClass = isLiked ? "fas fa-heart heart-icon" : "far fa-heart heart-icon";
+                var thumbsDownIconClass = isDisliked ? "fas fa-thumbs-down" : "far fa-thumbs-down";
+        
+        queueHTML += `
+            <div class="song-box">
+                <img class="song-image" src="${song[2]}" alt="Song Image">
+                <div class="song-details">
+                    <span class="song-title">${song[0]}</span>
+                </div>
+                <div class="song-actions">
+                    <i class="${heartIconClass}" onclick="toggleLike(this)" data-song-id="${song[1]}"></i>
+                    <i class="${thumbsDownIconClass}" onclick="toggleDislike(this)" data-song-id="${song[1]}"></i>
+                </div>
+            </div>
+        `;
             }
             queueContainer.innerHTML = queueHTML; 
         }
@@ -521,12 +539,26 @@
                 }
             });
         }
-
+        function get_song_status(){
+            $.ajax({
+                url: '/get_songs_status',
+                method: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    songs = [];
+                    console.log(data);
+                     songs = data;
+                    }
+            });
+        }
         let currentQueue = [];
+        var songs = [];
+        console.log('Start');
+        
         $(document).ready(function() {
             
-            // Call the updateQueue function every 1 second (1000 milliseconds)
-            setInterval(updateQueue, 30000);
+            // Call the updateQueue function every 30 seconds (30000 milliseconds)
+            setInterval(updateQueue, 10000);
         });
     </script>
 </body>

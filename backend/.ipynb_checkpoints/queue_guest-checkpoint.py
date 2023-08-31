@@ -16,36 +16,41 @@ UserOBJ = UserSpotify("93302b3440374f75bd84102271a41701", "218fdcfb4bab4abf9157c
 liked_songs = {}
 disliked_songs = {}
 
-class Node:
-    def __init__(self, queue):
-        self.data = queue[0]
-        self.next = queue[1][0]
-        
-queue = UserOBJ.get_queue()
-node_obj = Node(queue)
-
-print(UserOBJ)
 @app.route('/queue')
 def queue():
     global UserOBJ, liked_songs, disliked_songs, node_obj
     if UserOBJ is not None:
-        
-        old_liked_songs = liked_songs
-        old_disliked_songs = disliked_songs
-        
-        liked_songs = []
-        disliked_songs = []
         queue = UserOBJ.get_queue()
-        
-        node_obj.data = queue[0]
-        node_obj.next = queue[1][0]
-        
-        for song in queue[1]:
-            if song[1] in old_liked_songs:
-                liked_songs.append(song[1])
+
+        for user in liked_songs.keys():
+            users_liked_songs = liked_songs[user]
+            users_disliked_songs = disliked_songs[user]
+            
+            for song in users_liked_songs:
+                if not any(song == queue_song[1] for queue_song in queue[1]):
+                    print("Remove: ", song)
+                    if song in liked_songs[user]:
+                        liked_songs[user].remove(song)
                 
-            if song[1] in old_disliked_songs:
-                disliked_songs.append(song[1])
+            
+            for song in users_disliked_songs:
+                if not any(song == queue_song[1] for queue_song in queue[1]):
+                    print("Remove: ", song)
+                    if song in disliked_songs[user]:
+                        disliked_songs[user].remove(song)
+        if queue:
+            for idx in range(len(queue[1])):
+                song = queue[1][idx][1]
+                if song[1] in liked_songs[user]:
+                    queue[1][idx][1].append(True)
+                else:
+                    queue[1][idx][1].append(False)
+                if song in disliked_songs[user]:
+                    queue[1][idx][1].append(True)
+                else:
+                    queue[1][idx][1].append(False)
+                
+            
                 
         if queue is not None:
             return render_template('queue_guest.html', username=UserOBJ.username, listx=queue)
@@ -57,18 +62,24 @@ def queue_data():
     if UserOBJ is not None:
         queue = UserOBJ.get_queue()
         
-        old_liked_songs = liked_songs
-        old_disliked_songs = disliked_songs
-        
-        liked_songs = []
-        disliked_songs = []
-        queue = UserOBJ.get_queue()
-        for song in queue[1]:
-            if song[1] in old_liked_songs:
-                liked_songs.append(song[1])
+        for user in liked_songs.keys():
+            users_liked_songs = liked_songs[user]
+            users_disliked_songs = disliked_songs[user]
+            
+            for song in users_liked_songs:
+                if not any(song == queue_song[1] for queue_song in queue[1]):
+                    print("Remove: ", song)
+                    if song in liked_songs[user]:
+                        liked_songs[user].remove(song)
                 
-            if song[1] in old_disliked_songs:
-                disliked_songs.append(song[1])
+            
+            for song in users_disliked_songs:
+                if not any(song == queue_song[1] for queue_song in queue[1]):
+                    print("Remove: ", song)
+                    if song in disliked_songs[user]:
+                        disliked_songs[user].remove(song)
+        
+        queue = UserOBJ.get_queue()
                 
         if queue is not None:
             
@@ -108,36 +119,42 @@ def update_like_status():
     global UserOBJ, liked_songs, disliked_songs
     
     user_ip = request.remote_addr
-    if liked_songs == {}:
+    print(user_ip)
+    
+    if user_ip not in liked_songs:
         liked_songs[user_ip] = []
         disliked_songs[user_ip] = []
    
     song_id = request.form.get('songId')
     action = request.form.get('action')
-    print(song_id)
-    print(action)
+    
     if action == 'Love':
-        #do something
-        
         liked_songs[user_ip].append(song_id)
-    if action == 'remove Love':
-        #do something
-       # UserOBJ.skip_song()
+        
+    elif action == 'remove Love':
         liked_songs[user_ip].remove(song_id)
-    if action == 'thumbs down':
-        #do someting
-        UserOBJ.clear_song_from_queue(song_id)
+        
+    elif action == 'thumbs down':
+        
         disliked_songs[user_ip].append(song_id)
-    if action == 'remove thumbs down':
-        #do something
+        
+    elif action == 'remove thumbs down':
         disliked_songs[user_ip].remove(song_id)
         
-        
-    
     print("Disliked songs ", disliked_songs)
     print("Liked songs ", liked_songs)
     
-    return "Recieved"
+    return "Received"
+
+@app.route('/get_songs_status')
+def get_songs_status():
+    global UserOBJ, liked_songs, disliked_songs
+    if UserOBJ is not None:
+        user_ip = request.remote_addr
+        if liked_songs == {}:
+            return ['NONE']
+        return [liked_songs[user_ip], disliked_songs[user_ip]]
+
     
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
